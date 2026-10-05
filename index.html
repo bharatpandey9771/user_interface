@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Based Global Climate Change Prediction</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <nav class="sidebar" aria-label="Main">
+        <div class="brand">AI Based Global Climate Change Prediction</div>
+        <div class="team">Group 716 · Guide: Dr. S.N. Rajan</div>
+        <button class="nav-btn active">Overview</button>
+        <button class="nav-btn">Dataset &amp; Cleaning</button>
+        <button class="nav-btn">Exploratory Analysis</button>
+        <button class="nav-btn">Models &amp; Evaluation</button>
+        <button class="nav-btn">Predictions</button>
+        <button class="nav-btn">About Project</button>
+      </nav>
+
+      <main>
+        <header>
+          <div>
+            <h1>Climate Analysis &amp; Prediction</h1>
+            <p>
+              From raw observations to cleaned data, visual insights and
+              predicted trends
+            </p>
+          </div>
+          <div class="actions">
+            <label
+              class="btn"
+              style="display: inline-flex; align-items: center; cursor: pointer"
+            >
+              Upload dataset
+              <input id="file" type="file" accept=".csv" hidden="" />
+            </label>
+            <button class="btn primary" id="run">Run prediction</button>
+          </div>
+        </header>
+
+        <!-- Pipeline -->
+        <section class="card">
+          <h2>Pipeline</h2>
+          <div class="steps" id="steps">
+            <div class="step done">
+              <div class="dot">1</div>
+              Dataset
+            </div>
+            <div class="step done">
+              <div class="dot">2</div>
+              Cleaning
+            </div>
+            <div class="step done">
+              <div class="dot">3</div>
+              EDA
+            </div>
+            <div class="step done">
+              <div class="dot">4</div>
+              Features
+            </div>
+            <div class="step done">
+              <div class="dot">5</div>
+              Model
+            </div>
+            <div class="step current">
+              <div class="dot">6</div>
+              Evaluation
+            </div>
+            <div class="step">
+              <div class="dot">7</div>
+              Prediction
+            </div>
+            <div class="step">
+              <div class="dot">8</div>
+              Visualization
+            </div>
+          </div>
+        </section>
+
+        <!-- Stat cards -->
+        <section class="row">
+          <div class="card stat">
+            <div class="label">Records loaded</div>
+            <div class="value" id="s-records">[n]</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Missing values handled</div>
+            <div class="value" style="color: var(--teal)" id="s-missing">
+              [n]
+            </div>
+          </div>
+          <div class="card stat">
+            <div class="label">Variables used</div>
+            <div class="value">5</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Best model</div>
+            <div class="value" style="color: var(--orange)" id="s-model">
+              [model name]
+            </div>
+          </div>
+        </section>
+
+        <!-- Chart + heatmap -->
+        <section class="row">
+          <div class="card wide">
+            <div class="tabs" id="tabs" role="tablist">
+              <button class="tab active" role="tab" data-v="Temperature">
+                Temperature</button
+              ><button class="tab" role="tab" data-v="Precipitation">
+                Precipitation</button
+              ><button class="tab" role="tab" data-v="Humidity">Humidity</button
+              ><button class="tab" role="tab" data-v="Wind Speed">
+                Wind Speed</button
+              ><button class="tab" role="tab" data-v="Other">Other</button>
+            </div>
+            <h2>Observed vs predicted (illustrative)</h2>
+            <svg
+              class="chart"
+              id="chart"
+              viewBox="0 0 600 240"
+              role="img"
+              aria-label="Observed and predicted values"
+            >
+              <g stroke="#2F4A4F">
+                <line x1="40" y1="30" x2="590" y2="30"></line>
+                <line x1="40" y1="90" x2="590" y2="90"></line>
+                <line x1="40" y1="150" x2="590" y2="150"></line>
+                <line x1="40" y1="210" x2="590" y2="210"></line>
+              </g>
+              <rect
+                x="400"
+                y="20"
+                width="190"
+                height="190"
+                fill="#F59E42"
+                opacity="0.1"
+              ></rect>
+              <path
+                d="M40 170 C80 150 110 175 150 140 C190 110 220 150 260 120 C300 90 330 125 370 100 L400 95"
+                fill="none"
+                stroke="#E8F0EE"
+                stroke-width="2.5"
+              ></path>
+              <path
+                d="M200 143 C240 132 280 126 320 116 C360 108 380 104 400 99"
+                fill="none"
+                stroke="#3FC1B0"
+                stroke-width="3"
+              ></path>
+              <path
+                d="M400 95 C450 80 500 66 590 48"
+                fill="none"
+                stroke="#F59E42"
+                stroke-width="3"
+                stroke-dasharray="6 5"
+              ></path>
+              <g fill="#A9BFBB" font-size="11">
+                <text x="40" y="230">Start of record</text>
+                <text x="400" y="230">Forecast begins</text>
+                <text x="540" y="230">Future</text>
+              </g>
+            </svg>
+            <div class="legend">
+              <span style="color: var(--text)">Observed</span>
+              <span style="color: var(--teal)">Model fit</span>
+              <span style="color: var(--orange)">Future prediction</span>
+            </div>
+          </div>
+          <div class="card narrow">
+            <h2>Correlation between variables</h2>
+            <div class="heat" id="heat">
+              <div
+                style="background: rgba(63, 193, 176, 1)"
+                title="Temp vs Temp"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.32)"
+                title="Temp vs Precip"
+              ></div>
+              <div
+                style="background: rgba(245, 158, 66, 0.49)"
+                title="Temp vs Humid"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.23)"
+                title="Temp vs Wind"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.57)"
+                title="Temp vs Other"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.32)"
+                title="Precip vs Temp"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 1)"
+                title="Precip vs Precip"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.66)"
+                title="Precip vs Humid"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.41)"
+                title="Precip vs Wind"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.23)"
+                title="Precip vs Other"
+              ></div>
+              <div
+                style="background: rgba(245, 158, 66, 0.49)"
+                title="Humid vs Temp"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.66)"
+                title="Humid vs Precip"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 1)"
+                title="Humid vs Humid"
+              ></div>
+              <div
+                style="background: rgba(245, 158, 66, 0.32)"
+                title="Humid vs Wind"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.32)"
+                title="Humid vs Other"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.23)"
+                title="Wind vs Temp"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.41)"
+                title="Wind vs Precip"
+              ></div>
+              <div
+                style="background: rgba(245, 158, 66, 0.32)"
+                title="Wind vs Humid"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 1)"
+                title="Wind vs Wind"
+              ></div>
+              <div
+                style="background: rgba(245, 158, 66, 0.23)"
+                title="Wind vs Other"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.57)"
+                title="Other vs Temp"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.23)"
+                title="Other vs Precip"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 0.32)"
+                title="Other vs Humid"
+              ></div>
+              <div
+                style="background: rgba(245, 158, 66, 0.23)"
+                title="Other vs Wind"
+              ></div>
+              <div
+                style="background: rgba(63, 193, 176, 1)"
+                title="Other vs Other"
+              ></div>
+            </div>
+            <div class="heat-labels" id="heat-labels">
+              <span>Temp</span><span>Precip</span><span>Humid</span
+              ><span>Wind</span><span>Other</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Models + quality -->
+        <section class="row">
+          <div class="card wide">
+            <h2>Model comparison</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Type</th>
+                    <th>MAE</th>
+                    <th>RMSE</th>
+                    <th>R²</th>
+                  </tr>
+                </thead>
+                <tbody id="models">
+                  <tr>
+                    <td>ARIMA</td>
+                    <td>Time series</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                  </tr>
+                  <tr>
+                    <td>Exponential Smoothing</td>
+                    <td>Time series</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                  </tr>
+                  <tr>
+                    <td>Scikit-learn model</td>
+                    <td>Machine learning</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                  </tr>
+                  <tr>
+                    <td>LSTM (optional)</td>
+                    <td>Deep learning</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                    <td>[ ]</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card narrow">
+            <h2>Data quality</h2>
+            <div class="bars" id="bars">
+              <div>
+                <div class="bar-head">
+                  <span>Completeness</span><span class="note">[value]</span>
+                </div>
+                <div class="track">
+                  <div class="fill" style="width: 80%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="bar-head">
+                  <span>Outliers handled</span><span class="note">[value]</span>
+                </div>
+                <div class="track">
+                  <div class="fill" style="width: 65%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="bar-head">
+                  <span>Scaled features</span><span class="note">[value]</span>
+                </div>
+                <div class="track">
+                  <div class="fill" style="width: 90%"></div>
+                </div>
+              </div>
+            </div>
+            <p class="note">
+              Bars are illustrative. Prediction quality depends on dataset
+              coverage, data quality and chosen features.
+            </p>
+          </div>
+        </section>
+
+        <footer class="note">
+          Final numerical results will appear here after implementation and
+          testing.
+        </footer>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
